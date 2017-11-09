@@ -1,0 +1,795 @@
+
+
+ 
+ 
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv='Content-Type' content='text/html; charset=utf-8' />
+    <meta charset='utf-8' />
+
+	<meta name='Author' content='content generated with espresso Mind Map'>
+	<meta name='description' content='Mind Map generated with espresso MindMap'>
+	<meta name='keywords' content='espresso Mind Map, espressoApps.ch'>
+    <title>espresso MindMap</title>
+    <style>
+        body {
+            margin: 0px;
+            padding: 0px;
+            font-size: 1em;
+            font-family: 'Segoe UI', Arial, Helvetica;
+            text-align: left;
+        }
+    </style>
+</head>
+ 
+
+
+<body>
+
+
+<!---espresso HTML5 Mind-Map viewer (c) sourcecode espressoApps.ch 2012-2013 -->      
+<div id='espressodiv' style='text-align:left; font-family:"Segoe UI", Arial, Helvetica; font-size:medium; font-weight:400; color:black;' >
+<div id='espressoMindMap' style='position:relative; width:800px; height:600px; border:none;' >
+   <script type='text/javascript'>
+       // Parameters 
+       var zoom = 1/1.1;          // Zoom of MindMap normal: zoom=1;
+       var m_hideMenu = false;  // Menu on start On/Off
+       var mind_offset_x = 0;  // Relative position of mind-map (x=0,y=0): 1node in center 
+       var mind_offset_y = 0;
+       // Text of all Nodes visible in footer?
+       var m_showTextToggle = true; // togle text as menue element? Attention: Size of the div-element will become larger when text is expanded.
+       var h_textvisile = false;
+
+       // Canvas positioning
+
+       var c_marginx = 24;   // Horizontal Margin 
+       var c_marginy = 24;   // Vertical Margin 
+
+       var c_fixsizeX = false;  // true: for fix-size -> use size of this <div> -element
+       // false: auto-size ->  adjust with c_varwidth      
+       var c_varwidth = -10;      // auto size: window size + this value
+       var c_varwidthmin = 250; // minimum size 
+
+       var c_fixsizeY = false;  // true: for fix-size -> use size of this <div> -element
+       // false: auto-size -> adjust with c_varheight
+       var c_varheight = -10;  // auto size: window size + this value
+       var c_varheightmin = 250;// minimum size
+
+       var c_bgcolor = 'rgba(240, 240, 240, 1)'    // background color
+       var c_conectioncolor = '#909090';           // color of conection lines
+
+       // TextBox (Displays Node Text)
+       var b_FontSize = 16;
+       var b_linespace = 1.2;
+       var b_txtBox_zoom = 1;  // =1
+       var b_txtBox_marginx = 16;
+       var b_txtBox_marginy = 8;
+       var b_offsetx = 50;
+       var b_offsety = 30;
+       var b_iconspacer = 4;
+       // Navigation Elements.
+       var navigation_x = -26; navigation_y = -26;
+
+       // for Text-Content style see .textitem css-style
+   </script>
+
+   <style>
+       div.twindow {
+           text-align: right;
+           padding: 20px;
+           background-color: none;
+           opacity: 1;
+           width: Auto;
+           max-width: 800px;
+           min-width: 280px;
+           height: auto;
+           position: absolute;
+           top: 200px;
+           left: 50px;
+           clip: rect(auto, auto, auto, auto);
+       }
+
+       div.textitem {
+           text-align: left;
+           padding: 20px;
+           margin: 0px;
+           opacity: 1;
+           background-color: white;
+           border-color: black;
+           width: Auto;
+           height: auto;
+           box-shadow: 8px 8px 8px 8px rgba(0,0,0,0.4);
+       }
+       .textitem h1 {
+           font-size: medium;
+           font-weight: 700;
+           text-align: left;
+       }
+       div.mapdata {
+           padding: 16px;           
+       }
+       div.tarx {
+           font-weight: 700;
+           border-top: solid;
+           border-top-color: gray;
+           border-top-width: 1px;
+           padding: 4px;
+       }
+       div.arx { clear:both;
+           padding-left: 12px;
+       }
+   </style>
+
+  <div id='nesting' style='position: relative; text-align:left; height: auto;'  >
+
+    <canvas id='espressoCanvas' style='border: 1px solid #ffffff; background-color: rgba(240, 240, 240, 1); box-shadow: 5px 5px 8px #222; font-family: "Segoe UI", Arial, Helvetica;' >  
+        Sorry your brwoser doesn't support HTML5 Canvas / Java Script. Only text version available.
+    </canvas>
+
+    <script type='text/javascript'>
+        function roundRect(ctx, x, y, width, height, radius, fill, stroke, color, bgcolor, line) {
+            ctx.save();
+            if (typeof stroke == 'undefined') {
+                stroke = true;
+            }
+            if (typeof radius === 'undefined') {
+                radius = 5;
+            }
+            if (height < 2 * radius) radius = height / 2;
+            if (width < 2 * radius) radius = width / 2;
+            ctx.lineWidth = line;
+            ctx.strokeStyle = color;
+            ctx.beginPath();
+            ctx.moveTo(x + radius, y);
+            ctx.lineTo(x + width - radius, y);
+            ctx.quadraticCurveTo(x + width, y, x + width, y + radius);
+            ctx.lineTo(x + width, y + height - radius);
+            ctx.quadraticCurveTo(x + width, y + height, x + width - radius, y + height);
+            ctx.lineTo(x + radius, y + height);
+            ctx.quadraticCurveTo(x, y + height, x, y + height - radius);
+            ctx.lineTo(x, y + radius);
+            ctx.quadraticCurveTo(x, y, x + radius, y);
+            ctx.closePath();
+            if (stroke) {
+                ctx.stroke();
+            }
+            if (fill) {
+                ctx.fillStyle = bgcolor;
+                ctx.fill();
+            }
+            ctx.restore();
+        }
+
+        function wText(ctx, i) {
+            var bord = 4; var s = b_txtBox_zoom; if (over == i) { bord = 7; s = s * 1.05; }
+            ctx.save();
+            ctx.translate(MD[i].x, MD[i].y);
+            ctx.scale(s, s);
+
+            var text = MD[i].txt;
+            var x = MD[i].cx - MD[i].x;
+            var y = MD[i].cy - MD[i].y;
+            var w = MD[i].wx - MD[i].cx;
+            var h = MD[i].wy - MD[i].cy;
+            roundRect(ctx, 7 + x, 7 + y, w, h, MD[i].rad, true, false, 'rgba(0, 0, 0, 0.4)', 'rgba(0, 0, 0, 0.4)', 4);
+            if (MD[i].hastext) {
+                ctx.beginPath();
+                var xa = x + w / 5;
+                var ya = y + h;
+                roundRect(ctx, 3 + xa, 6 + ya, 18, 13, 1, true, false, 'rgba(0, 0, 0, 0.4)', 'rgba(0, 0, 0, 0.4)', 1);
+                roundRect(ctx, xa, ya, 18, 15, 1, true, true, 'black', MD[i].col, 1);
+                ctx.lineWidth = 0.5;
+                ctx.moveTo(xa + 4, ya + 4);
+                ctx.lineTo(xa + 13, ya + 4);
+                ctx.stroke();
+                ctx.beginPath();
+                ctx.moveTo(xa + 4, ya + 7);
+                ctx.lineTo(xa + 15, ya + 7);
+                ctx.stroke();
+                ctx.beginPath();
+                ctx.moveTo(xa + 4, ya + 10);
+                ctx.lineTo(xa + 14, ya + 10);
+                ctx.stroke();
+            }
+            if (MD[i].hlink=='true') {
+                ctx.beginPath();
+                var xa = x + w / 5+22;
+                var ya = y + h;
+                roundRect(ctx, 3 + xa, 6 + ya, 18, 13, 1, true, false, 'rgba(0, 0, 0, 0.4)', 'rgba(0, 0, 0, 0.4)', 1);
+                roundRect(ctx, xa, ya, 18, 15, 1, true, true, 'black', MD[i].col, 1);
+                ctx.lineWidth = 0.5;
+                ctx.save();                
+                ctx.lineWidth = 1.5; ctx.strokeStyle = '#333'; ctx.beginPath();
+                ctx.arc(xa + 6, ya + 8, 3, 0, 6.28, false)
+                ctx.stroke(); ctx.closePath(); ctx.beginPath();
+                ctx.arc(xa + 12, ya + 8, 3, 0, 6.28, false)
+                ctx.stroke(); ctx.closePath(); 
+                ctx.beginPath();
+                ctx.moveTo(xa + 6, ya + 8);
+                ctx.lineTo(xa + 12, ya + 8);
+                ctx.stroke();
+                ctx.restore();
+            }
+            roundRect(ctx, x, y, w, h, MD[i].rad, true, true, 'black', MD[i].col, bord);
+            writeMessage(ctx, text, MD[i].tx, MD[i].ty);
+
+            if (MD[i].iconImg != null) {
+                ctx.drawImage(MD[i].iconImg, MD[i].icnx, MD[i].icny);
+            }
+            ctx.restore();
+        }
+
+        function writeMessage(ctx, message, x, y) {
+            ctx.save();
+            ctx.textAlign = 'left';
+            ctx.textBaseline = 'top';
+            ctx.font = b_FontSize + 'px Arial';
+            ctx.fillStyle = 'black';
+            mlineText(ctx, message, x, y, b_linespace * b_FontSize);
+            ctx.restore();
+        }
+
+        function mlineText(ctx, fulltext, x, y, lineHeight) {
+            var y0 = y;
+            var line = '';
+            var text = fulltext.split('<br>');
+            for (var li = 0; li < text.length; li++) {
+                var line = '' + text[li];
+                ctx.fillText(line, x, y);
+                //ctx.strokeText(line, x, y);
+                y += lineHeight;
+            }
+        }
+
+        function TextBoxSize(ctx, fulltext, lineHeight) {
+            var width = 0;
+            var y = 0;
+            ctx.save();
+            ctx.textAlign = 'left';
+            ctx.textBaseline = 'top';
+            ctx.font = b_FontSize + 'px Arial';
+            ctx.fillStyle = 'black';
+            var text = fulltext.split('<br>');
+            for (var li = 0; li < text.length; li++) {
+                var line = '' + text[li];
+                var metrics = ctx.measureText(line);
+                var w = metrics.width;
+                if (width < w) width = w;
+                y += lineHeight;
+            }
+            ctx.restore();
+            return [width, y];
+        }
+
+        function overItem(x, y) {
+            x = x / zoom; y = y / zoom;
+            for (i = 0; i < MD.length; i++) {
+                if (MD[i].cx < x && MD[i].wx > x && MD[i].cy < y && MD[i].wy > y) { return i; }
+            }
+            return -1;
+        }
+
+        function drawMind(x, y) {
+            var canvas = document.getElementById('espressoCanvas');
+            var context = canvas.getContext('2d');
+            context.fillStyle = c_conectioncolor;
+
+ 			context.beginPath();context.moveTo(922,299);context.lineTo(922,299);context.lineTo(926,294);context.lineTo(1045,383);context.lineTo(1044,385);context.closePath(); context.fill();
+ 			context.beginPath();context.moveTo(876,386);context.lineTo(876,386);context.lineTo(882,381);context.lineTo(967,477);context.lineTo(966,479);context.closePath(); context.fill();
+ 			context.beginPath();context.moveTo(921,295);context.lineTo(921,295);context.lineTo(927,298);context.lineTo(880,384);context.lineTo(878,383);context.closePath(); context.fill();
+ 			context.beginPath();context.moveTo(918,203);context.lineTo(918,203);context.lineTo(926,203);context.lineTo(925,297);context.lineTo(923,297);context.closePath(); context.fill();
+ 			context.beginPath();context.moveTo(487,52);context.lineTo(487,52);context.lineTo(490,44);context.lineTo(922,202);context.lineTo(921,204);context.closePath(); context.fill();
+ 			context.beginPath();context.moveTo(661,477);context.lineTo(661,477);context.lineTo(666,477);context.lineTo(665,532);context.lineTo(663,532);context.closePath(); context.fill();
+ 			context.beginPath();context.moveTo(661,427);context.lineTo(661,427);context.lineTo(667,427);context.lineTo(665,477);context.lineTo(663,477);context.closePath(); context.fill();
+ 			context.beginPath();context.moveTo(660,376);context.lineTo(660,376);context.lineTo(666,376);context.lineTo(665,427);context.lineTo(663,427);context.closePath(); context.fill();
+ 			context.beginPath();context.moveTo(658,318);context.lineTo(658,318);context.lineTo(665,318);context.lineTo(664,376);context.lineTo(662,376);context.closePath(); context.fill();
+ 			context.beginPath();context.moveTo(653,261);context.lineTo(653,261);context.lineTo(660,260);context.lineTo(662,318);context.lineTo(660,318);context.closePath(); context.fill();
+ 			context.beginPath();context.moveTo(662,198);context.lineTo(662,198);context.lineTo(670,199);context.lineTo(658,261);context.lineTo(656,260);context.closePath(); context.fill();
+ 			context.beginPath();context.moveTo(486,51);context.lineTo(486,51);context.lineTo(491,45);context.lineTo(667,197);context.lineTo(665,199);context.closePath(); context.fill();
+ 			context.beginPath();context.moveTo(441,373);context.lineTo(441,373);context.lineTo(448,372);context.lineTo(450,468);context.lineTo(448,468);context.closePath(); context.fill();
+ 			context.beginPath();context.moveTo(392,298);context.lineTo(392,298);context.lineTo(397,294);context.lineTo(445,372);context.lineTo(443,373);context.closePath(); context.fill();
+ 			context.beginPath();context.moveTo(430,193);context.lineTo(430,193);context.lineTo(437,196);context.lineTo(396,296);context.lineTo(393,295);context.closePath(); context.fill();
+ 			context.beginPath();context.moveTo(485,47);context.lineTo(485,47);context.lineTo(492,49);context.lineTo(434,195);context.lineTo(432,194);context.closePath(); context.fill();
+ 			context.beginPath();context.moveTo(205,196);context.lineTo(205,196);context.lineTo(213,197);context.lineTo(151,467);context.lineTo(149,466);context.closePath(); context.fill();
+ 			context.beginPath();context.moveTo(205,197);context.lineTo(205,197);context.lineTo(213,196);context.lineTo(228,402);context.lineTo(225,402);context.closePath(); context.fill();
+ 			context.beginPath();context.moveTo(205,195);context.lineTo(205,195);context.lineTo(213,198);context.lineTo(128,361);context.lineTo(126,360);context.closePath(); context.fill();
+ 			context.beginPath();context.moveTo(207,193);context.lineTo(207,193);context.lineTo(211,200);context.lineTo(61,311);context.lineTo(59,309);context.closePath(); context.fill();
+ 			context.beginPath();context.moveTo(487,44);context.lineTo(487,44);context.lineTo(490,52);context.lineTo(210,198);context.lineTo(208,195);context.closePath(); context.fill();
+            context.textAlign = 'center';
+            context.font = '16px Arial';
+            for (i = 0; i < MD.length; i++) wText(context, i);
+        }
+        itemcounter = 0;
+        var atleastonehastext = false;
+        function Item(txt, x, y, col, rad, cont, has, c1, c2, c3,hlink) {
+            this.x = x;
+            this.y = y;
+            this.col = col;
+            this.rad = rad;
+            this.content = '';
+            this.id = cont;
+            this.hastext = has;
+            this.icol1 = c1;
+            this.icol2 = c2;
+            this.icol3 = c3;                        
+            this.hlink = hlink;
+
+            if (has) { atleastonehastext = true; }
+            var getTitle = (document.getElementById('T' + cont)).innerHTML;
+            getTitle = getTitle.replace('&lt;', '<').replace('&gt;', '>').replace('&quot;', '"').replace('&amp;', '&')
+            this.txt = '' + getTitle;
+
+            this.iconImg = document.getElementById('I' + cont);
+            var ix = 0; iy = 0;
+            if (this.iconImg != null) {
+                ix = this.iconImg.width + b_iconspacer;
+                iy = this.iconImg.height;
+                try {
+                    var image = new Image();
+                    var img = this.iconImg;
+                    var c = img_getCanvas(img.width, img.height);
+                    var ictx = c.getContext('2d');
+                    ictx.drawImage(img, 0, 0);
+                    var imgdata = ictx.getImageData(0, 0, c.width, c.height);
+                    var img2 = img_colorize(imgdata, this.icol1, this.icol2, this.icol3);
+                    ictx.putImageData(img2, 0, 0);
+                    image.src = c.toDataURL();
+                    this.iconImg = image;
+                } catch (e) {
+                }
+            }
+            var context = canvas.getContext('2d');
+            var size = TextBoxSize(context, this.txt, b_linespace * b_FontSize);
+            this.tw = size[0];
+            this.th = size[1];
+            this.cx = this.x - this.tw / 2 - b_txtBox_marginx - ix / 2;
+            this.cy = this.y - this.th / 2 - b_txtBox_marginy;
+            this.wx = this.x + this.tw / 2 + b_txtBox_marginx + ix;
+            this.wy = this.y + this.th / 2 + b_txtBox_marginy;
+            this.tx = this.cx - this.x + b_txtBox_marginx + ix;
+            this.ty = this.cy - this.y + 1.2 * b_txtBox_marginy;
+            this.icnx = this.cx - this.x + b_txtBox_marginx;
+            this.icny = this.cy - this.y + (this.wy - this.cy - iy) / 2;
+
+            itemcounter++;
+        }
+        function img_colorize(imgdata, c1, c2, c3) {
+            var d = imgdata.data;
+            for (var i = 0; i < d.length; i += 4) {
+                d[i] = c1;
+                d[i + 1] = c2;
+                d[i + 2] = c3;
+            }
+            return imgdata;
+        }
+        function img_getCanvas(w, h) {
+            var c = document.createElement('canvas');
+            c.width = w;
+            c.height = h;
+            return c;
+        };
+
+        var MD;
+        function initData() {
+            MD = [
+			new Item("x",488,48,'#FFA0A0',2,"ARX0",true,0,0,0,'false'), 
+			new Item("x",209,197,'#FFFFB4',20,"ARX1",true,0,0,0,'false'), 
+			new Item("x",433,194,'#FFFFB4',20,"ARX2",true,0,0,0,'false'), 
+			new Item("x",666,198,'#FFFFB4',20,"ARX3",true,0,0,0,'true'), 
+			new Item("x",922,203,'#FFFFB4',20,"ARX4",true,0,0,0,'true'), 
+			new Item("x",60,310,'#FFFFFF',20,"ARX5",false,0,0,0,'false'), 
+			new Item("x",127,360,'#FFFFFF',20,"ARX6",false,0,0,0,'false'), 
+			new Item("x",226,402,'#FFFFFF',20,"ARX7",false,0,0,0,'false'), 
+			new Item("x",150,467,'#FFFFFF',20,"ARX8",true,0,0,0,'false'), 
+			new Item("x",395,296,'#FFFFFF',20,"ARX9",true,0,0,0,'false'), 
+			new Item("x",444,373,'#FFFFFF',20,"ARX10",true,0,0,0,'true'), 
+			new Item("x",449,468,'#FFFFFF',20,"ARX11",false,0,0,0,'false'), 
+			new Item("x",657,261,'#FFFFFF',20,"ARX12",false,0,0,0,'false'), 
+			new Item("x",661,318,'#FFFFFF',20,"ARX13",false,0,0,0,'false'), 
+			new Item("x",663,376,'#FFFFFF',20,"ARX14",false,0,0,0,'false'), 
+			new Item("x",664,427,'#FFFFFF',20,"ARX15",false,0,0,0,'false'), 
+			new Item("x",664,477,'#FFFFFF',20,"ARX16",false,0,0,0,'false'), 
+			new Item("x",664,532,'#FFFFFF',20,"ARX17",false,0,0,0,'false'), 
+			new Item("x",924,297,'#FFFFFF',20,"ARX18",false,0,0,0,'false'), 
+			new Item("x",879,383,'#FFFFFF',20,"ARX19",false,0,0,0,'false'), 
+			new Item("x",1044,384,'#FFFFFF',20,"ARX20",false,0,0,0,'false'), 
+			new Item("x",967,478,'#FFFFFF',20,"ARX21",false,0,0,0,'false'), 
+
+            ];
+        }
+
+        function updateCanvas() {
+            canvas.style.backgroundColor = c_bgcolor;
+            context.clearRect(0, 0, canvas.width, canvas.height);
+var ctxt ="espresso Mind Map Light - www.espressoApps.ch";  var ctxt2 ="espresso Mind Map Light - www.espressoApps.ch";
+            context.save();
+            var cwx=canvas.width/2;
+            var cwy= canvas.height/2;
+            if (cwx<100) cwx=100;
+            var d=Math.sqrt(4*cwx*cwx+4*cwy*cwy)
+            context.lineWidth = 1;
+            context.translate(cwx, 0.3*cwy);                    
+            context.font = '72px Arial';           
+            context.textAlign = 'center';                    
+            context.fillStyle = '#bbb';
+            context.strokeStyle = '#dfdfdf';
+            var metrics = context.measureText(ctxt);                                    
+            var widthtxt = metrics.width;       
+            context.scale(0.95*2*cwx/widthtxt, 0.95*2*cwx/widthtxt);                     
+            context.fillText(ctxt, 0,0 ); 
+            context.fillStyle = '#fafafa';
+            context.fillText(ctxt, 0, 0); 
+            context.strokeText(ctxt, 0, 0); 
+            context.restore();
+            context.save();
+            context.textAlign = 'right';
+            context.font = '18px Arial';                               
+            context.fillStyle = '#222200';                    
+            var metrics = context.measureText(ctxt2);                                    
+            widthtxt = metrics.width;                           
+            context.fillText(ctxt2, 0.95*cwx*2,cwy*2-10); 
+            context.fillStyle = '#222200';                    
+            context.restore();
+            context.save();
+            context.translate(posx, posy);
+            context.scale(zoom, zoom);
+            drawMind(0, 0);
+            if (over >= 0) {
+                var id = MD[over].id;
+                var divelement = document.getElementById(id);
+                message = 'none';
+                if (divelement != null) {
+                    message = divelement.innerHTML;
+                }
+            }
+            context.restore();
+        }
+
+        var posx = 30; posy = 40;
+        var poscenterx = 0; poscentery = 0;
+        var mouse_down = false; mouse_x = 0; mouse_y = 0;
+        var mouse_was_x = 0; mouse_was_y = 0;
+        var down_mousewasOver = -1;
+        var canvas;
+        var context;
+        var over = -1;
+        var node_textvisible = true;
+
+        function setCenter() {
+            posx = canvas.width / 2 - MD[0].x * zoom + mind_offset_x;
+            posy = canvas.height / 2 - MD[0].y * zoom + mind_offset_y;
+            poscenterx = posx;
+            poscentery = posy;
+        }
+
+        function init() {
+            initData();
+            //if (atleastonehastext == false) { txtWin_close(); } else txtWin_visible();
+            txtWin_close();
+            canvas = document.getElementById('espressoCanvas');
+            context = canvas.getContext('2d');
+            on_change();
+            setCenter();
+
+            drawCloseButton();
+            var txtWin = document.getElementById('txtWindow');
+            txtWin.style.top = 50 + 'px';
+            txtWin.style.left = 50 + 'px';
+            if (m_hideMenu) { Scroll_close(); } else Scroll_open;
+            updateCanvas();
+
+            // mouse events
+            canvas.addEventListener('mouseup', function (evt) {
+                mouse_down = false;
+                click = false;
+                var mousePos = getMousePos(canvas, evt);
+                if (mousePos.x - mouse_was_x < 3 && mousePos.y - mouse_was_y < 3 && -mousePos.x + mouse_was_x < 3 && -mousePos.y + mouse_was_y < 3) click = true;
+                var up = overItem(mousePos.x - posx, mousePos.y - posy);
+
+                if (down_mousewasOver == up && click) {
+                    if (up >= 0) {                        
+                        if (!MD[up].hastext && MD[up].hlink=='true') {
+                            //var hl = document.getElementById('T' + MD[up].id);                                                        
+                            //parent.location.href = hl.href;
+                        }
+                        if (SetItemText(up)) { txtWin_visible(); }
+                        else txtWin_close();
+                    }
+                    else txtWin_close();
+                }
+            }, false);
+
+            canvas.addEventListener('mouseout', function (event) { mouse_down = false; }, false);
+
+            canvas.addEventListener('mousemove', function (evt) {
+                var mousePos = getMousePos(canvas, evt);
+                var nowover = overItem(mousePos.x - posx, mousePos.y - posy);
+
+                if (mouse_down) {
+                    posx += mousePos.x - mouse_x;
+                    posy += mousePos.y - mouse_y;
+                    mouse_x = mousePos.x;
+                    mouse_y = mousePos.y;
+                }
+                if (nowover == over || mouse_down) {
+                    updateCanvas(posx, posy);
+                } else { over = nowover; }
+
+            }, false);
+
+            canvas.addEventListener('mousedown', function (evt) {
+                mouse_down = true;
+                var mousePos = getMousePos(canvas, evt);
+                mouse_x = mousePos.x; mouse_y = mousePos.y;
+                mouse_was_x = mouse_x; mouse_was_y = mouse_y;
+                down_mousewasOver = overItem(mousePos.x - posx, mousePos.y - posy);
+            }, false);
+
+
+            if (!h_textvisile) {
+                Scroll_TextOnOff('off');
+            }
+            if (!m_showTextToggle) { var st = document.getElementById('ScrollTextOnOff'); st.style.visibility = 'collapse'; }
+        }
+
+        function getMousePos(canvas, evt) {
+            var rect = canvas.getBoundingClientRect();
+            return {
+                x: evt.clientX - rect.left,
+                y: evt.clientY - rect.top
+            };
+        }
+
+        function drawCloseButton() {
+            var canvas = document.getElementById('txtWindowCanv'); var ctx = canvas.getContext('2d');
+            ctx.lineWidth = 1.5;
+            ctx.strokeStyle = '#666';
+            ctx.beginPath();
+            ctx.moveTo(4, 4);
+            ctx.lineTo(14, 14);
+            ctx.stroke();
+            ctx.beginPath();
+            ctx.moveTo(4, 14);
+            ctx.lineTo(14, 4);
+            ctx.stroke();
+        }
+
+        function SetItemText(itemnr) {
+            drawCloseButton();
+            var textc = document.getElementById('textcontent');
+            var text = (document.getElementById(MD[itemnr].id)).innerHTML;
+            var getTitle = (document.getElementById('T' + MD[itemnr].id));
+            var txtWin = document.getElementById('txtWindow');
+            var h = MD[itemnr].hlink;
+            if (h == 'true') {
+                textc.innerHTML = '<h1><a href=\'' + getTitle.href + '\'>' + getTitle.innerHTML + '</a></h1>' + text;
+            }
+            else {
+                textc.innerHTML = '<h1>' + getTitle.innerHTML + '</h1>' + text;
+            }
+            var onscreenx = posx + MD[itemnr].x * zoom + c_marginx - b_offsetx;  // canvas.offsetLeft
+            var onscreeny = posy + MD[itemnr].y * zoom + c_marginy - b_offsety; // canvas.offsetTop
+            txtWin.style.top = onscreeny + 'px';
+            txtWin.style.left = onscreenx + 'px';
+            return true;
+        }
+
+        function on_change() {
+
+            var canvas = document.getElementById('espressoCanvas');
+            canvas.style.marginTop = c_marginy.toString() + 'px';
+            canvas.style.marginLeft = c_marginx.toString() + 'px';
+            var mind = document.getElementById('espressoMindMap');
+            var footer = document.getElementById('espressofooter');
+            if (c_fixsizeX == false) {
+                var cw = window.innerWidth + c_varwidth;
+                if (c_varwidthmin > cw) cw = c_varwidthmin;
+
+                mind.style.width = cw.toString() + 'px';
+            }
+            if (c_fixsizeY == false) {
+                var ch = window.innerHeight + c_varheight
+                if (c_varheightmin > ch) ch = c_varheightmin;
+                mind.style.height = ch.toString() + 'px';
+            }
+
+            var width = mind.offsetWidth - 2 * c_marginx;
+            var height = mind.offsetHeight - 2 * c_marginy - footer.offsetHeight;
+            if (width < 1) width = 1;
+            if (height < 1) height = 1;
+            canvas.width = width;
+            canvas.height = height;
+            updateCanvas(posx, posy);
+
+
+            var canvasx = document.getElementById('CanvasCenter'); canvasx.style.left = (c_marginx + navigation_x).toString() + 'px'; canvasx.style.top = (c_marginy + navigation_y).toString() + 'px';
+            var canvasx = document.getElementById('CanvasUp'); canvasx.style.left = (c_marginx + canvas.width / 2 + navigation_x).toString() + 'px'; canvasx.style.top = (c_marginy + navigation_y).toString() + 'px';
+            var canvasx = document.getElementById('CanvasRight'); canvasx.style.left = (c_marginx + canvas.width + navigation_x).toString() + 'px'; canvasx.style.top = (c_marginy + canvas.height / 2 + navigation_y).toString() + 'px';
+            var canvasx = document.getElementById('CanvasLeft'); canvasx.style.left = (c_marginx + navigation_x).toString() + 'px'; canvasx.style.top = (c_marginy + canvas.height / 2 + navigation_y).toString() + 'px';
+            var canvasx = document.getElementById('CanvasDown'); canvasx.style.left = (c_marginx + canvas.width / 2 + navigation_x).toString() + 'px'; canvasx.style.top = (c_marginy + canvas.height + navigation_y).toString() + 'px';
+            var canvasx = document.getElementById('CanvasClose'); canvasx.style.left = (c_marginx + canvas.width + navigation_x).toString() + 'px'; canvasx.style.top = (c_marginy + canvas.height + navigation_y).toString() + 'px';
+            var canvasx = document.getElementById('CanvasOpen'); canvasx.style.left = (c_marginx + canvas.width + navigation_x).toString() + 'px'; canvasx.style.top = (c_marginy + canvas.height + navigation_y).toString() + 'px';
+            var canvasx = document.getElementById('CanvasTextOnOff'); canvasx.style.left = (c_marginx + navigation_x).toString() + 'px'; canvasx.style.top = (c_marginy + canvas.height + navigation_y).toString() + 'px';
+            var canvasx = document.getElementById('CanvasZoomIn'); canvasx.style.left = (c_marginx + canvas.width + navigation_x).toString() + 'px'; canvasx.style.top = (c_marginy + navigation_y).toString() + 'px';
+            var canvasx = document.getElementById('CanvasZoomOut'); canvasx.style.left = (c_marginx + canvas.width + navigation_x).toString() + 'px'; canvasx.style.top = (c_marginy + navigation_y + 75).toString() + 'px';
+
+        }
+      </script>
+                   <!-- Scrolling -->
+        <div id='Scrollers'  > 
+            
+           <script type='text/javascript'>
+               function Scroll_up() { posy += 150; updateCanvas(posx, posy); }
+               function Scroll_down() { posy += -150; updateCanvas(posx, posy); }
+               function Scroll_left() { posx += 150; updateCanvas(posx, posy); }
+               function Scroll_right() { posx += -150; updateCanvas(posx, posy); }
+               function Scroll_center() { posx = poscenterx; posy = poscentery; updateCanvas(posx, posy); }
+               function Scroll_close() { var sb = document.getElementById('ScrollButtons'); sb.style.visibility = 'collapse'; var sb = document.getElementById('ScrollButtonsOn'); sb.style.visibility = 'visible'; }
+               function Scroll_open() { var sb = document.getElementById('ScrollButtons'); sb.style.visibility = 'visible'; var sb = document.getElementById('ScrollButtonsOn'); sb.style.visibility = 'collapse' }
+               function Scroll_zoomin() { zoom = zoom * 1.1; updateCanvas(posx, posy); }
+               function Scroll_zoomout() { zoom = zoom / 1.1; updateCanvas(posx, posy); }
+               function drawArrow(ctx, angle) {
+                   ctx.save();
+                   ctx.translate(25, 25);
+                   ctx.rotate(angle / 180 * Math.PI);
+                   ctx.scale(2, 2); ctx.lineWidth = 1.5; ctx.strokeStyle = '#999'; ctx.beginPath(); ctx.moveTo(-8, -4); ctx.lineTo(2, -4); ctx.lineTo(2, -10); ctx.lineTo(11, 0); ctx.lineTo(2, 10); ctx.lineTo(2, 4); ctx.lineTo(-8, 4); ctx.stroke(); ctx.fillStyle = 'rgba(255,255,255,1)'; ctx.closePath(); ctx.fill();
+                   ctx.restore();
+               }
+               function drawViewNav(ctx) { drawArrowS(ctx, 0, 0.8, 8, 0); drawArrowS(ctx, 180, 0.8, -8, 0); drawArrowS(ctx, 90, 0.8, 0, 8); drawArrowS(ctx, 270, 0.8, 0, -8); }
+               function drawloseNav(ctx) { drawArrowS(ctx, 0, 0.8, -14, 0); drawArrowS(ctx, 180, 0.8, 14, 0); drawArrowS(ctx, 90, 0.8, 0, -14); drawArrowS(ctx, 270, 0.8, 0, 14); }
+               function drawArrowS(ctx, angle, size, x, y) {
+                   ctx.save();
+                   ctx.translate(25 + x, 25 + y);
+                   ctx.rotate(angle / 180 * Math.PI);
+                   ctx.scale(size, size); ctx.lineWidth = 1.5; ctx.strokeStyle = '#999'; ctx.beginPath(); ctx.moveTo(-8, -4); ctx.lineTo(2, -4); ctx.lineTo(2, -10); ctx.lineTo(11, 0); ctx.lineTo(2, 10); ctx.lineTo(2, 4); ctx.lineTo(-8, 4); ctx.stroke(); ctx.fillStyle = 'rgba(255,255,255,1)'; ctx.closePath(); ctx.fill();
+                   ctx.restore();
+               }
+               function drawCircle(ctx, rad) {
+                   ctx.save();
+                   ctx.translate(24, 24);
+                   ctx.scale(2, 2); ctx.lineWidth = 1.5; ctx.strokeStyle = '#333'; ctx.beginPath();
+                   ctx.arc(0, 0, rad, 0, 2 * Math.PI, false)
+                   ctx.stroke(); ctx.fillStyle = '#fff'; ctx.closePath(); ctx.fill();
+                   ctx.restore();
+               }
+               function drawTextOnOff(ctx) {
+                   drawArrowS(ctx, 90, 0.8, 0, 4); ctx.font = ctx.font = '10px Arial'; ctx.fillStyle = 'gray'; ctx.fillText('text', 14, 18);
+               }
+               function drawZoom(ctx, t) {
+                   ctx.save();
+                   ctx.translate(0, 0);
+                   ctx.strokeStyle = '#999'; ctx.lineWidth = 8; ctx.beginPath(); ctx.moveTo(24,24); ctx.lineTo(40, 40); ctx.closePath(); ctx.stroke();
+                   drawCircle(ctx, 5);
+                   ctx.font = ctx.font = '24px Arial'; ctx.fillStyle = 'gray'; ctx.fillText(t, 18, 32);
+                   ctx.restore();
+               }
+               function Scroll_TextOnOff(seton) {
+                   var txt = document.getElementById('mapdatax');
+                   if (typeof seton == 'undefined') {
+                       seton = 'on';
+                       if (node_textvisible) seton = 'off';
+                   }
+                   if (seton == 'off') {
+                       node_textvisible = false;
+                       txt.style.visibility = 'collapse'; txt.style.width = '0px'; txt.style.height = '0px';
+                       txt.style.clip = 'rect(0px, 0px, 1px, 1px)';
+                       txt.style.cssFloat = 'left';
+                       txt.style.position = 'absolute';
+
+                   }
+                   else {
+                       node_textvisible = true;
+                       txt.style.width = 'auto'; txt.style.height = 'auto';
+                       txt.style.visibility = 'visible';
+                       txt.style.position = 'relative';
+                   }
+               }
+            </script>
+           
+        <div id='ScrollButtons'>
+            <div onclick='Scroll_center()'> <canvas id='CanvasCenter' width='48' height='48' style='position: absolute; left: 0px; top:0px; background-color: rgba(200,200,200,0.3); border: 0px solid gray; box-shadow: none'>  <script type='text/javascript'>var canvas = document.getElementById('CanvasCenter'); var ctx = canvas.getContext('2d'); drawCircle(ctx, 7); drawCircle(ctx, 1) </script> </canvas>    </div>                             
+            <div onclick='Scroll_up()'> <canvas id='CanvasUp' width='48' height='48' style='position: absolute; left: 0px; top:0px; background-color: rgba(200,200,200,0.3); border: 0px solid gray; box-shadow: none;'>  <script type='text/javascript'>var canvas = document.getElementById('CanvasUp'); var ctx = canvas.getContext('2d'); drawArrow(ctx, -90);  </script> </canvas>    </div>                             
+            <div onclick='Scroll_left()'> <canvas id='CanvasLeft' width='48' height='48' style='position: absolute; left: 0px; top:60px; background-color: rgba(200,200,200,0.3); border: 0px solid gray; box-shadow: none' >  <script type='text/javascript'>var canvas = document.getElementById('CanvasLeft'); var ctx = canvas.getContext('2d'); drawArrow(ctx, 180);  </script> </canvas>    </div>                             
+            <div onclick='Scroll_right()'> <canvas id='CanvasRight' width='48' height='48' style='position: absolute;  left: 0px; top:0px;  background-color: rgba(200,200,200,0.3); border: 0px solid gray; box-shadow: none'>  <script type='text/javascript'>var canvas = document.getElementById('CanvasRight'); var ctx = canvas.getContext('2d'); drawArrow(ctx, 0);  </script> </canvas>    </div>                             
+            <div onclick='Scroll_down()'> <canvas id='CanvasDown' width='48' height='48' style='position: absolute; left: 0px; top:0px; background-color: rgba(200,200,200,0.3); border: 0px solid gray; box-shadow: none'>  <script type='text/javascript'>var canvas = document.getElementById('CanvasDown'); var ctx = canvas.getContext('2d'); drawArrow(ctx, 90);  </script> </canvas>    </div>                             
+            <div onclick='Scroll_close()'> <canvas id='CanvasClose' width='48' height='48' style='position: absolute; left: 0px; top:0px; background-color: rgba(200,200,200,0.3); border: 0px solid gray; box-shadow: none'>  <script type='text/javascript'>var canvas = document.getElementById('CanvasClose'); var ctx = canvas.getContext('2d'); drawloseNav(ctx);</script> </canvas>    </div>                              
+            <div onclick='Scroll_zoomin()'> <canvas id='CanvasZoomIn' width='48' height='48' style='position: absolute; left: 0px; top:0px; background-color: rgba(200,200,200,0.3); border: 0px solid gray; box-shadow: none'>  <script type='text/javascript'>var canvas = document.getElementById('CanvasZoomIn'); var ctx = canvas.getContext('2d'); drawZoom(ctx,'+');</script> </canvas>    </div>                              
+            <div onclick='Scroll_zoomout()'> <canvas id='CanvasZoomOut' width='48' height='48' style='position: absolute; left: 0px; top:0px; background-color: rgba(200,200,200,0.3); border: 0px solid gray; box-shadow: none'>  <script type='text/javascript'>var canvas = document.getElementById('CanvasZoomOut'); var ctx = canvas.getContext('2d'); drawZoom(ctx,'-');</script> </canvas>    </div>                              
+        </div>
+        <div id='ScrollButtonsOn' style='visibility:collapse;'>
+            <div onclick='Scroll_open()'> <canvas id='CanvasOpen' width='48' height='48' style='position: absolute; left: 0px; top:0px; background-color: rgba(200,200,200,0.3); border: 0px solid gray; box-shadow: none'>  <script type='text/javascript'>var canvas = document.getElementById('CanvasOpen'); var ctx = canvas.getContext('2d'); drawViewNav(ctx); </script> </canvas>    </div>                              
+        </div>
+        <div id='ScrollTextOnOff'>
+            <div onclick='Scroll_TextOnOff()'> <canvas id='CanvasTextOnOff' width='48' height='48' style='position: absolute; left: 0px; top:0px; background-color: rgba(200,200,200,0.3); border: 0px solid gray; box-shadow: none'>  <script type='text/javascript'>var canvas = document.getElementById('CanvasTextOnOff'); var ctx = canvas.getContext('2d'); drawTextOnOff(ctx);</script> </canvas>    </div>                              
+        </div>
+
+      </div>  <!--  end Scroolling -->  
+
+
+  
+      </div>  <!--  end nesting -->    
+    
+       
+    <div id='datanesting'>
+        <div id='mapdatax' class='mapdata'  >
+<div> <div class='tarx'> <div style='float:left;'> <img id='IARX0' src='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeCAYAAAA7MK6iAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAEfSURBVEhL7ZVRDcIwFEWHBhxggC/+EEBQgAMc4AALaEACHrCABbAA78BuUpq266AlIelJbrZ1W+977V3WNRr/wMZ0N51MMwZ+gUzXpqPp1p9XZW7CCHOxNamQKkxNmB6eV++cTbvXaVkwZXL21IeOKajKXtPlxUQBLksTy8wxC/aKiaiU8xTqyH+ODhnnfhaEgBf2Jk0aq5hnQ8HR0pPqLDSRm0p9Hu4YKMGh0LD0GPtLH4UKQ6n0zZmQrQg9G1v6JOo49JJrTjehjhQmf+mzYOJYxTLnvm+qMH31vfJyytwfHx2mFOxf7l6NDtMQOeYfhSmHVDdfhSmHkHmRMA2h8Mhc10XCNOmPMTDT3wfThWllujJQG3VaJUyNRmG67gHtNE1nCM7GtQAAAABJRU5ErkJggg=='/> </div> <div id='TARX0'>机器如何学习设计</div> </div><div id='ARX0' class='arx'>我们要让机器学习设计，首先必须要让机器理解感知设计是什么。以这样一张非常常见的广告为例，在机器的眼里是有一堆像素点组成的。如果今天以像素为单位让机器去理解设计，对设计的可控性非常弱，所以在前期技术方案选择中没有走像素级生产，而是走向了元素级生产。</div></div> 
+<div> <div class='tarx'> <div style='float:left;'> <img id='IARX1' src='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeCAYAAAA7MK6iAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAD0SURBVEhL7ZWxDcIwEEUjGIENaClYgAEQE7ABG7ABKzADNRU7wAisAB2ihP/AlqwoEk5yBwLypKcEF/d9xo6Ljp+nH55NGMqRvMgrAx4M5Fxu5FnegscwtpRMpDEUSQsQSNE0jPeVHEszJpLCM0lhOoqByCSYjAsLmYbhXrZayhzoOg1dS3N64RlhGbfP1/fCpkk7ZYnduo7QbQwlEBhzD083VXpU3MN3kuIcmTKu4RTlDBNShUs4ZzSnoHl4PLs5n0HT8PipzMUsnGAuiDqYhFOkaje/wiS86SVg+p/X5XvCy7dTG05yKg+PXx+Azjv+nqK4A+3ZUo45dsCDAAAAAElFTkSuQmCC'/> </div> <div id='TARX1'>设计框架</div> </div><div id='ARX1' class='arx'>组成一，设计框架。还是以这个广告为例，首先通过人工标注的方式，让机器理解这张设计有哪些元素组成，比如它的商品主体，花的背景，蒙版。往上一层，我们通过设计的经验知识，定义一些设计的手法和风格。手法指的是这些元素为什么可以这么构成，这个知识在设计脑子里机器是不知道的，所以会有手法这一层做输入。最上面这一层是风格，当这些元素构成之后，它从美学或者视觉角度看是一个什么感受。让机器知道它是用什么组成的，为什么可以这么组成，以及它组成后的效果。这个过程将一个设计问题转化成数据问题，这就是设计数据化。</div></div> 
+<div> <div class='tarx'> <div style='float:left;'> <img id='IARX2' src='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeCAYAAAA7MK6iAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAADdSURBVEhLYxgFIxJ4AfF/KuIVQIwBmKA0MtCB0tQC4VAaBTBCaWRQBsSdECbDXSDOA+JPYB7xIAeIkS3EZg8GAFkMC6YdIAEyALIZIIwBsAU1XcCoxehAGErTBaAnDGpgDDAax3QDA2YxoSITBs4A8VsIkyBwh9LIgOQiE2eqxANagZigfloE9UcojRcMmcQFCkZQjQXCIDbZgFSLjYEYlHhAGMQmGwxYUDNDaWTwBYgVgRjU+oDhJUAMAppA/A2IQWJngXgfEKMDWSDmBWKY3h4gBqkdBaOAHoCBAQA/vU7+6PH1+wAAAABJRU5ErkJggg=='/> </div> <div id='TARX2'>元素中心</div> </div><div id='ARX2' class='arx'>组成二，元素中心。因为我们做的是元素级生成，所以必须准备一个元素的库。我们会通过收集一些版权图库，以及自己造设计元素的方式，输入到一个元素的分类器。这个分类器会把这些元素分布到各个类型里，比如背景、主体、修饰，也会完成图片库的提取。</div></div> 
+<div> <div class='tarx'> <div style='float:left;'> <img id='IARX3' src='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeCAYAAAA7MK6iAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAACVSURBVEhLYxgFo2BYgxVArARh0hf8h+IyIBYGCdALwCwG4XdAnA7EdAHIFsPwHSC2AWKaAmwWw/AOIKZZ/GOzEB1PA2Kqxz82i7BhUPyDEiDVADZL8GFQ/HsBMcUAm+HEYFD8U5QAsRlKCibbcmyGEYPp7mO6x/GApGq652O6l1x0L6sHpHaie308YC2QUTAKqAgYGAD0zp0zPHdxzwAAAABJRU5ErkJggg=='/> </div> <div><a id='TARX3' href='http://image.uisdc.com/wp-content/uploads/2017/05/uisdc-ucan-20170511-7.jpg'>行动器</a></div> </div><div id='ARX3' class='arx'>组成三，行动器。接下来，就是设计的具体过程。比如今天我们接到一个设计任务，要为这样一件衣服设计一个花朵风格的广告。这时候会有一个行动器，负责把前面准备好的底料放到设计框架里。这个过程和下围棋很像，左边是棋盘，右边是下围棋的棋子。行动器就是把元素放到棋盘里，这是整个行动器的生成原理。<br /><br />它很像设计师实际在做设计的过程，如设计师要做一个花朵的时候，也在软件里面会不断去调每个位置、每个像素、每个角度。同时，整个过程也是一个强化学习的过程，行动器会在不断试错中更智能。</div></div> 
+<div> <div class='tarx'> <div style='float:left;'> <img id='IARX4' src='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeCAYAAAA7MK6iAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAC2SURBVEhL7ZVBDYRADEXHAw4wgAEUrAIcrAMcYAENeMHCalgLbN+EJpPNknDY/lNf8jN0Ls1vS6ckSdLQm1bTUiMhu+kwPWokYjaRVOp2MJH0Zeq4UOElHmskYjLJS0xZ36ekJfaBetZIhLtloKS4W3r8V9hCV1Ma6tZ/EVbgN/Q0xC2wFHD1a3hwGtrbNjnfwB4mpseh0GcS+TrczpgZCKd9ADhJLsOHDUmfPS85PU+S5AalfAAJTi5Bk5coVgAAAABJRU5ErkJggg=='/> </div> <div><a id='TARX4' href='http://image.uisdc.com/wp-content/uploads/2017/05/uisdc-ucan-20170511-8.jpg'>评估网络</a></div> </div><div id='ARX4' class='arx'>评估网络。设计成品出来之后，我们要告诉机器人，从设计的角度是好还是不好。我们有一个设计评估网络，最终实现的效果就是给它输入任何一个设计成品，它能打个分。技术原理是，我们通过人工输入大量历史上投放过的一些设计图评分，它从这里训练出一个打分的模型出来。同时，专家也会人工干预打分，完成双向反馈。</div></div> 
+<div> <div class='tarx'> <div id='TARX5'>获取元素组成</div></div><div id='ARX5' class='arx'></div></div> 
+<div> <div class='tarx'> <div id='TARX6'>定义设计手法</div></div><div id='ARX6' class='arx'></div></div> 
+<div> <div class='tarx'> <div id='TARX7'>定义设计风格</div></div><div id='ARX7' class='arx'></div></div> 
+<div> <div class='tarx'> <div id='TARX8'>准备设计的原始文件输入到深度学习网络</div></div><div id='ARX8' class='arx'>下一步是准备设计的原始文件，比如一系列花朵和设计方法，输入到深度学习系列网络。这个网络有一个很大特点：具备一定记忆功能。因为设计是个步骤很复杂的过程，经常有好几十步才能完成一个设计。经过这层神经网络学习之后，我们会得到一个设计框架。从技术上理解，它是一堆空间特征和视觉特征构成的模型。设计师的视角来理解的话，它相当于设计师脑子里面在做一组设计之前大概的框架印象，比如今天你接到一个任务要做一个花朵风格，思考这个设计大概会怎么做，然后从一堆文件里提取出了特征模型出来。</div></div> 
+<div> <div class='tarx'> <div id='TARX9'>准备一个元素的库</div></div><div id='ARX9' class='arx'>收集一些版权图库，以及自己造设计元素的方式</div></div> 
+<div> <div class='tarx'> <div><a id='TARX10' href='http://image.uisdc.com/wp-content/uploads/2017/05/uisdc-ucan-20170511-6.jpg'>元素的分类器</a></div></div><div id='ARX10' class='arx'>这个分类器会把这些元素分布到各个类型里，比如背景、主体、修饰，也会完成图片库的提取。</div></div> 
+<div> <div class='tarx'> <div id='TARX11'>输出到各个分类</div></div><div id='ARX11' class='arx'></div></div> 
+<div> <div class='tarx'> <div id='TARX12'>商品特征提取</div></div><div id='ARX12' class='arx'></div></div> 
+<div> <div class='tarx'> <div id='TARX13'>选择背景</div></div><div id='ARX13' class='arx'></div></div> 
+<div> <div class='tarx'> <div id='TARX14'>选择模板</div></div><div id='ARX14' class='arx'></div></div> 
+<div> <div class='tarx'> <div id='TARX15'>文案组合</div></div><div id='ARX15' class='arx'></div></div> 
+<div> <div class='tarx'> <div id='TARX16'>选择修饰</div></div><div id='ARX16' class='arx'></div></div> 
+<div> <div class='tarx'> <div id='TARX17'>生成最优结果</div></div><div id='ARX17' class='arx'></div></div> 
+<div> <div class='tarx'> <div id='TARX18'>输入任何一个设计成品</div></div><div id='ARX18' class='arx'></div></div> 
+<div> <div class='tarx'> <div id='TARX19'>机器评估反馈得分</div></div><div id='ARX19' class='arx'></div></div> 
+<div> <div class='tarx'> <div id='TARX20'>人工反馈评分</div></div><div id='ARX20' class='arx'></div></div> 
+<div> <div class='tarx'> <div id='TARX21'>完成双向反馈</div></div><div id='ARX21' class='arx'></div></div> 
+
+        </div> 
+    </div>
+    <script type='text/javascript'>
+        function attachEventHandler(element, eventToHandle, eventHandler) {
+            if (element.attachEvent) {
+                element.attachEvent(eventToHandle, eventHandler);
+            } else if (element.addEventListener) {
+                element.addEventListener(eventToHandle.replace('on', ''), eventHandler, false);
+            } else {
+                element[eventToHandle] = eventHandler;
+            }
+        }
+
+        attachEventHandler(window, 'onresize', function () {
+            on_change();
+        });
+        attachEventHandler(window, 'onload', function () {
+            init();
+        });
+    </script>
+
+    <div id='espressofooter'>
+              <div id='txtWindow' class='twindow' style='visibility:collapse;'> 
+            <div onclick='txtWin_close()'>
+                <canvas id='txtWindowCanv' width='18' height='18' style='position: relative; right:12px; left: auto; top:12px; background-color: rgba(200,200,200,0.8); border: 1px solid gray;'> 
+                </canvas>
+            </div>                             
+            <script type='text/javascript'>
+                function txtWin_close() {
+                    var tw = document.getElementById('txtWindow');
+                    tw.style.visibility = 'collapse';
+
+                }
+                function txtWin_visible() {
+                    var tw = document.getElementById('txtWindow');
+                    tw.style.visibility = 'visible';
+                }
+
+            </script>
+            <div id='textcontent' class='textitem'  > Klicken Sie auf einen Knoten, um den Text zu lesen.           
+            </div>    
+        </div>
+        <!--espressoNote-->
+        <div id='espresso' style='font-size: 1em; font-family: "Segoe UI", Arial, Helvetica; text-align: center;' >  
+            <br />              
+            This html5 mind map file can be opened and edited with <a href='http://www.espressoApps.ch/windows/en/mindmap/'>espresso Mind Map</a>             
+            <!-- espresso Mind Map - espressoApps.ch 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 espresso Mind Map - espressoApps.ch -->
+        </div>            
+        <!--espressoNote-->
+    </div>     
+</div> 
+</div>    <!-- end of espresso HTML5 Mind-Map viewer  -->
+
+
+</body>
+</html>
+
